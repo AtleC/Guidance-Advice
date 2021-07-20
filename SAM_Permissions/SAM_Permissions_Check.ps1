@@ -40,8 +40,9 @@ write-host -foregroundcolor Magenta "$Build`n"
 #demarcate results section
 write-host "`n---Vulnerability Results---"
 
+$Users = (New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-545")).Translate([System.Security.Principal.NTAccount]).Value
 if ((get-acl C:\windows\system32\config\sam).Access |
-	? IdentityReference -match 'BUILTIN\\Users' | 
+	? IdentityReference -like $Users | 
 	select -expandproperty filesystemrights | 
 	select-string 'Read')
 	{write-host -foregroundcolor Red "`n$Name may be vulnerable: Arbitrary Read permissions for SAM file`n"}
